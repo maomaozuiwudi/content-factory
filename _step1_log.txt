@@ -1,0 +1,229 @@
+目标总时长: 35s, 每段约 6s
+[ClipVideo] 分析视频: E:\任务\小红书内容工坊\materials\video1_18-14.mp4
+[ClipVideo] 目标时长: 5.833333333333333s
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+W0000 00:00:1782059828.127243   37484 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1782059828.146303   36452 inference_feedback_manager.cc:121] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+[ClipVideo] ✅ 骨架检测器已加载 (模型: pose_landmarker_bd11cfe9.task)
+[Phase 1] 视频: 720x1280, 30.00fps, 1853帧 (61.8s)
+W0000 00:00:1782059828.222097    9348 landmark_projection_calculator.cc:81] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+  [进度] 0% (1/1853帧)
+  [进度] 10% (186/1853帧)
+  [进度] 20% (371/1853帧)
+  [进度] 30% (556/1853帧)
+  [进度] 40% (742/1853帧)
+  [进度] 50% (927/1853帧)
+  [进度] 60% (1112/1853帧)
+  [进度] 70% (1298/1853帧)
+  [进度] 80% (1483/1853帧)
+  [进度] 90% (1668/1853帧)
+  [进度] 100% (1853/1853帧)
+  [完成] 扫描结束，共 1853 帧
+[ClipVideo] 共扫描 1853 帧 (61.8s), 检测到骨架的帧: 1853
+[ClipVideo] 场景切换点: 1 个场景
+  场景: 帧 0-1852 (61.7s)
+[Phase 2] 脚踝可见帧: 1756/1853 (94.8%, 阈值=0.3)
+[ClipVideo] 身体类型: 全身 (full)
+[ClipVideo] 好帧: 1816/1853 (98.0%)
+
+[Phase 4-保留规则] 场景数=1, 好段数=6:
+  ✗ 帧 9-26 (0.6s, 姿态评分=0.611)
+  ✗ 帧 30-36 (0.2s, 姿态评分=0.654)
+  ✗ 帧 41-61 (0.7s, 姿态评分=0.562)
+  ✓ 帧 64-1171 (36.9s, 姿态评分=0.625)
+  ✓ 帧 1185-1833 (21.6s, 姿态评分=0.603)
+  ✗ 帧 1835-1853 (0.6s, 姿态评分=0.674)
+
+[Phase 4] 选择: 帧 64-1171 (足够长, 姿态评分最高=0.625)
+[ClipVideo] 最佳片段: 帧 530-705 (5.8s)
+[Phase 5] 输出: E:\任务\小红书内容工坊\output\temp_clips\video1_18-14.mp4 (175帧, 5.8s)
+[ClipVideo] ✅ 完成: E:\任务\小红书内容工坊\output\temp_clips\video1_18-14.mp4
+✅ 剪辑完成: video1_18-14.mp4 (5.8s)
+[ClipVideo] 分析视频: E:\任务\小红书内容工坊\materials\video2_18-15a.mp4
+[ClipVideo] 目标时长: 5.833333333333333s
+[Phase 1] 视频: 720x1280, 29.95fps, 1836帧 (61.3s)
+  [进度] 0% (1/1836帧)
+  [进度] 10% (184/1836帧)
+  [进度] 20% (368/1836帧)
+  [进度] 30% (551/1836帧)
+E0000 00:00:1782059930.154617   29852 portable_clearcut_uploader.cc:90] Failed to send to clearcut: INTERNAL: ResponseInfo[id: 1, type: 0, code: 2, description: "Status_ConnectFailed: 12002", headers: ]
+=== Source Location Trace: === 
+wireless/android/play/playlog/cplusplus/ion_http_client.cc:44
+  [进度] 40% (735/1836帧)
+  [进度] 50% (918/1836帧)
+  [进度] 60% (1102/1836帧)
+  [进度] 70% (1286/1836帧)
+  [进度] 80% (1469/1836帧)
+  [进度] 90% (1653/1836帧)
+  [进度] 100% (1836/1836帧)
+  [完成] 扫描结束，共 1836 帧
+[ClipVideo] 共扫描 1836 帧 (61.3s), 检测到骨架的帧: 1826
+[ClipVideo] 场景切换点: 1 个场景
+  场景: 帧 0-1825 (60.9s)
+[Phase 2] 脚踝可见帧: 13/1826 (0.7%, 阈值=0.3)
+[ClipVideo] 身体类型: 半身 (half)
+[ClipVideo] 好帧: 1758/1836 (95.8%)
+
+[Phase 4-保留规则] 场景数=1, 好段数=5:
+  ✗ 帧 0-6 (0.2s, 姿态评分=0.638)
+  ✓ 帧 18-1387 (45.7s, 姿态评分=0.623)
+  ✗ 帧 1401-1407 (0.2s, 姿态评分=0.646)
+  ✗ 帧 1411-1423 (0.4s, 姿态评分=0.583)
+  ✓ 帧 1433-1798 (12.2s, 姿态评分=0.627)
+
+[Phase 4] 选择: 帧 1433-1798 (足够长, 姿态评分最高=0.627)
+[ClipVideo] 最佳片段: 帧 1528-1702 (5.8s)
+[Phase 5] 输出: E:\任务\小红书内容工坊\output\temp_clips\video2_18-15a.mp4 (174帧, 5.8s)
+[ClipVideo] ✅ 完成: E:\任务\小红书内容工坊\output\temp_clips\video2_18-15a.mp4
+✅ 剪辑完成: video2_18-15a.mp4 (5.8s)
+[ClipVideo] 分析视频: E:\任务\小红书内容工坊\materials\video3_18-15b.mp4
+[ClipVideo] 目标时长: 5.833333333333333s
+[Phase 1] 视频: 720x1280, 29.97fps, 2998帧 (100.0s)
+  [进度] 0% (1/2998帧)
+  [进度] 10% (300/2998帧)
+  [进度] 20% (600/2998帧)
+  [进度] 30% (900/2998帧)
+E0000 00:00:1782060032.233756   29852 portable_clearcut_uploader.cc:90] Failed to send to clearcut: INTERNAL: ResponseInfo[id: 2, type: 0, code: 2, description: "Status_ConnectFailed: 12002", headers: ]
+=== Source Location Trace: === 
+wireless/android/play/playlog/cplusplus/ion_http_client.cc:44
+  [进度] 40% (1200/2998帧)
+  [进度] 50% (1499/2998帧)
+  [进度] 60% (1799/2998帧)
+  [进度] 70% (2099/2998帧)
+  [进度] 80% (2399/2998帧)
+  [进度] 90% (2699/2998帧)
+  [进度] 100% (2998/2998帧)
+  [完成] 扫描结束，共 2998 帧
+[ClipVideo] 共扫描 2998 帧 (100.0s), 检测到骨架的帧: 2998
+[ClipVideo] 场景切换点: 1 个场景
+  场景: 帧 0-2997 (100.0s)
+[Phase 2] 脚踝可见帧: 2489/2998 (83.0%, 阈值=0.3)
+[ClipVideo] 身体类型: 全身 (full)
+[ClipVideo] 好帧: 2873/2998 (95.8%)
+
+[Phase 4-保留规则] 场景数=1, 好段数=9:
+  ✗ 帧 16-26 (0.3s, 姿态评分=0.642)
+  ✗ 帧 33-62 (1.0s, 姿态评分=0.625)
+  ✓ 帧 68-447 (12.6s, 姿态评分=0.706)
+  ✗ 帧 457-476 (0.6s, 姿态评分=0.623)
+  ✓ 帧 489-991 (16.8s, 姿态评分=0.653)
+  ✗ 帧 1007-1025 (0.6s, 姿态评分=0.608)
+  ✗ 帧 1031-1078 (1.6s, 姿态评分=0.626)
+  ✗ 帧 1115-1121 (0.2s, 姿态评分=0.661)
+  ✓ 帧 1124-2987 (62.2s, 姿态评分=0.654)
+
+[Phase 4] 选择: 帧 68-447 (足够长, 姿态评分最高=0.706)
+[ClipVideo] 最佳片段: 帧 170-344 (5.8s)
+[Phase 5] 输出: E:\任务\小红书内容工坊\output\temp_clips\video3_18-15b.mp4 (174帧, 5.8s)
+[ClipVideo] ✅ 完成: E:\任务\小红书内容工坊\output\temp_clips\video3_18-15b.mp4
+✅ 剪辑完成: video3_18-15b.mp4 (5.8s)
+[ClipVideo] 分析视频: E:\任务\小红书内容工坊\materials\video4_18-15c.mp4
+[ClipVideo] 目标时长: 5.833333333333333s
+[Phase 1] 视频: 720x1280, 30.00fps, 3255帧 (108.5s)
+  [进度] 0% (1/3255帧)
+  [进度] 10% (326/3255帧)
+E0000 00:00:1782060134.284033   29852 portable_clearcut_uploader.cc:90] Failed to send to clearcut: INTERNAL: ResponseInfo[id: 3, type: 0, code: 2, description: "Status_ConnectFailed: 12002", headers: ]
+=== Source Location Trace: === 
+wireless/android/play/playlog/cplusplus/ion_http_client.cc:44
+  [进度] 20% (651/3255帧)
+  [进度] 30% (977/3255帧)
+  [进度] 40% (1302/3255帧)
+  [进度] 50% (1628/3255帧)
+  [进度] 60% (1953/3255帧)
+  [进度] 70% (2279/3255帧)
+  [进度] 80% (2604/3255帧)
+  [进度] 90% (2930/3255帧)
+E0000 00:00:1782060236.367744   29852 portable_clearcut_uploader.cc:90] Failed to send to clearcut: INTERNAL: ResponseInfo[id: 4, type: 0, code: 2, description: "Status_ConnectFailed: 12002", headers: ]
+=== Source Location Trace: === 
+wireless/android/play/playlog/cplusplus/ion_http_client.cc:44
+  [进度] 100% (3255/3255帧)
+  [完成] 扫描结束，共 3255 帧
+[ClipVideo] 共扫描 3255 帧 (108.5s), 检测到骨架的帧: 3255
+[ClipVideo] 场景切换点: 1 个场景
+  场景: 帧 0-3254 (108.5s)
+[Phase 2] 脚踝可见帧: 2627/3255 (80.7%, 阈值=0.3)
+[ClipVideo] 身体类型: 全身 (full)
+[ClipVideo] 好帧: 3226/3255 (99.1%)
+
+[Phase 4-保留规则] 场景数=1, 好段数=5:
+  ✗ 帧 0-4 (0.1s, 姿态评分=0.663)
+  ✓ 帧 14-331 (10.6s, 姿态评分=0.633)
+  ✗ 帧 341-375 (1.1s, 姿态评分=0.538)
+  ✗ 帧 378-382 (0.1s, 姿态评分=0.571)
+  ✓ 帧 388-3255 (95.6s, 姿态评分=0.626)
+
+[Phase 4] 选择: 帧 14-331 (足够长, 姿态评分最高=0.633)
+[ClipVideo] 最佳片段: 帧 85-260 (5.8s)
+[Phase 5] 输出: E:\任务\小红书内容工坊\output\temp_clips\video4_18-15c.mp4 (175帧, 5.8s)
+[ClipVideo] ✅ 完成: E:\任务\小红书内容工坊\output\temp_clips\video4_18-15c.mp4
+✅ 剪辑完成: video4_18-15c.mp4 (5.8s)
+[ClipVideo] 分析视频: E:\任务\小红书内容工坊\materials\video5_18-16a.mp4
+[ClipVideo] 目标时长: 5.833333333333333s
+[Phase 1] 视频: 720x1280, 30.00fps, 2270帧 (75.7s)
+  [进度] 0% (1/2270帧)
+  [进度] 10% (227/2270帧)
+  [进度] 20% (454/2270帧)
+  [进度] 30% (681/2270帧)
+  [进度] 40% (908/2270帧)
+  [进度] 50% (1135/2270帧)
+  [进度] 60% (1362/2270帧)
+  [进度] 70% (1589/2270帧)
+  [进度] 80% (1816/2270帧)
+  [进度] 90% (2043/2270帧)
+  [进度] 100% (2270/2270帧)
+  [完成] 扫描结束，共 2270 帧
+[ClipVideo] 共扫描 2270 帧 (75.7s), 检测到骨架的帧: 2270
+[ClipVideo] 场景切换点: 1 个场景
+  场景: 帧 0-2269 (75.6s)
+[Phase 2] 脚踝可见帧: 1460/2270 (64.3%, 阈值=0.3)
+[ClipVideo] 身体类型: 全身 (full)
+[ClipVideo] 好帧: 2231/2270 (98.3%)
+
+[Phase 4-保留规则] 场景数=1, 好段数=5:
+  ✗ 帧 0-98 (3.3s, 姿态评分=0.537)
+  ✗ 帧 101-268 (5.6s, 姿态评分=0.532)
+  ✓ 帧 275-1414 (38.0s, 姿态评分=0.624)
+  ✓ 帧 1418-2062 (21.5s, 姿态评分=0.618)
+  ✓ 帧 2076-2259 (6.1s, 姿态评分=0.623)
+
+[Phase 4] 选择: 帧 275-1414 (足够长, 姿态评分最高=0.624)
+[ClipVideo] 最佳片段: 帧 757-932 (5.8s)
+E0000 00:00:1782060338.453780   29852 portable_clearcut_uploader.cc:90] Failed to send to clearcut: INTERNAL: ResponseInfo[id: 5, type: 0, code: 2, description: "Status_ConnectFailed: 12002", headers: ]
+=== Source Location Trace: === 
+wireless/android/play/playlog/cplusplus/ion_http_client.cc:44
+[Phase 5] 输出: E:\任务\小红书内容工坊\output\temp_clips\video5_18-16a.mp4 (175帧, 5.8s)
+[ClipVideo] ✅ 完成: E:\任务\小红书内容工坊\output\temp_clips\video5_18-16a.mp4
+✅ 剪辑完成: video5_18-16a.mp4 (5.8s)
+[ClipVideo] 分析视频: E:\任务\小红书内容工坊\materials\video6_18-16b.mp4
+[ClipVideo] 目标时长: 5.833333333333333s
+[Phase 1] 视频: 720x1280, 30.00fps, 2355帧 (78.5s)
+  [进度] 0% (1/2355帧)
+  [进度] 10% (236/2355帧)
+  [进度] 20% (471/2355帧)
+  [进度] 30% (707/2355帧)
+  [进度] 40% (942/2355帧)
+  [进度] 50% (1178/2355帧)
+  [进度] 60% (1413/2355帧)
+  [进度] 70% (1649/2355帧)
+  [进度] 80% (1884/2355帧)
+  [进度] 90% (2120/2355帧)
+  [进度] 100% (2355/2355帧)
+  [完成] 扫描结束，共 2355 帧
+[ClipVideo] 共扫描 2355 帧 (78.5s), 检测到骨架的帧: 2353
+[ClipVideo] 场景切换点: 1 个场景
+  场景: 帧 0-2354 (78.5s)
+[Phase 2] 脚踝可见帧: 1849/2353 (78.6%, 阈值=0.3)
+[ClipVideo] 身体类型: 全身 (full)
+[ClipVideo] 好帧: 2351/2355 (99.8%)
+
+[Phase 4-保留规则] 场景数=1, 好段数=1:
+  ✓ 帧 0-2351 (78.4s, 姿态评分=0.630)
+
+[Phase 4] 选择: 帧 0-2351 (足够长, 姿态评分最高=0.630)
+[ClipVideo] 最佳片段: 帧 1088-1263 (5.8s)
+[Phase 5] 输出: E:\任务\小红书内容工坊\output\temp_clips\video6_18-16b.mp4 (175帧, 5.8s)
+[ClipVideo] ✅ 完成: E:\任务\小红书内容工坊\output\temp_clips\video6_18-16b.mp4
+✅ 剪辑完成: video6_18-16b.mp4 (5.8s)
+
+全部剪辑完成！共 6 段，总时长 34.8s
+STEP1_DONE

@@ -1,0 +1,22 @@
+# Output directories
+output/
+temp_clips/
+temp_frames/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
+
+# Logs
+logs/
+*.log
+
+# Runtime / temp
+nul
+intro_*.mp4
+temp_*.mp4
+temp_*.wav

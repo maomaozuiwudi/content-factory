@@ -1,0 +1,122 @@
+[main.py] 1038行 ... 18个问题
+  [中] main.py:414 | 路径穿越/命令注入风险：用户输入音频路径未校验直接使用 | 对用户输入的音频路径进行校验，限制在指定目录内，避免使用os.path.exists直接验证不可信路径
+  [中] main.py:635 | 硬编码绝对路径：测试素材路径写死为Windows路径 | 改用相对路径或配置路径，使用resolve_path处理
+  [高] main.py:478,492,526 | 网络请求未设超时：requests.get调用没有timeout参数 | 为所有requests.get添加timeout参数，如timeout=30
+  [中] main.py:287 | 素材类型判断逻辑冗余且不一致：重复编写视频/图片分类代码，且部分路径可能非str类型 | 统一封装素材分类函数，确保所有路径为Path或str类型后再判断
+  [中] main.py:285-288 | 逻辑边界问题：material_paths元素可能不是字符串导致endswith报错 | 统一将路径转换为Path对象再判断后缀
+  [中] main.py:362 | 异常处理过宽：捕获所有Exception但仅打印，关键功能失败后继续执行 | 区分关键/非关键异常，关键异常（如视频合成）应终止流程或给出明确处理方案
+  [中] main.py:458 | 死循环风险：voice_choice非1/2时没有循环提示重新输入 | 添加输入验证循环，确保voice_choice为1或2
+  [中] main.py:526 | 资源未正确释放：requests.get响应对象未关闭 | 使用with语句管理requests响应
+  [低] main.py:531 | 异常处理缺失：compose_mixed调用未捕获异常 | 添加try-except捕获视频合成异常
+  [中] main.py:249 | 空指针风险：self.cache.get("analysis")可能为None直接传递 | 添加默认值{}，确保format_analysis_for_prompt有输入
+  [低] main.py:348 | 逻辑漏洞：视频不存在时shots为空，但后续未完全处理该边界 | 提前判断shots是否为空，给出明确提示并终止流程
+  [低] main.py:452 | 类型误用：voice_script可能元素不足时直接拼接导致空句子 | 过滤空字符串后再拼接
+  [中] main.py:558 | 逻辑漏洞：用户选择输出类型非1/2时默认走视频分支但无提示 | 添加输入验证，默认提示或明确说明
+  [低] main.py:612 | 资源未释放：cv2.VideoCapture未在finally中释放 | 将cap.release()放在finally块中
+  [中] main.py:669 | 异常处理缺失：Edge TTS生成配音未捕获异常 | 添加try-except捕获asyncio和edge_tts相关异常
+  [低] main.py:128 | 输入验证缺失：用户输入output_choice非1/2时直接走视频分支 | 添加输入验证循环，明确提示用户重新选择
+  [低] main.py:397 | 输入验证缺失：用户输入output_choice非1/2时直接走视频分支 | 添加输入验证循环
+  [低] main.py:558 | 输入验证缺失：用户选择输出类型非1/2时直接走视频分支 | 添加输入验证循环
+[modules/video_composer.py] 147行 ... 10个问题
+  [中] modules/video_composer.py:81-97 | shots列表元素未做键存在性/值有效性校验，缺失type/path/duration或type非法会直接抛出KeyError/异常 | 建议在遍历前校验每个shot的必填字段、type取值范围，无效时抛出明确ValueError
+  [中] modules/video_composer.py:128-130 | 仅关闭了final剪辑对象，ImageClip/VideoFileClip/AudioFileClip的子对象未关闭，可能导致临时文件残留、内存泄漏或文件句柄占用 | 建议用try-finally或context manager包裹所有创建的剪辑对象，遍历逐个close
+  [低] modules/video_composer.py:85-88 | 图片缩放逻辑冗余，最后直接Resize到固定分辨率，前面的resized完全多余 | 建议删除前面两次resized调用，保留with_effects([vfx.Resize(...)])并注意保持宽高比（可选避免拉伸）
+  [低] modules/video_composer.py:93 | video分支with_duration冗余，subclipped已控制时长，未超过时设置相同值无意义 | 建议删除else分支
+  [中] modules/video_composer.py:108-109、113-114 | 音频文件存在性判断仅用os.path.exists，未校验文件可读性/是否为有效音频，直接传入AudioFileClip会抛异常 | 建议在exists后增加try打开校验有效性，或交由moviepy异常后统一捕获并明确提示
+  [高] modules/video_composer.py:compose_mixed内部使用绝对moviepy导入，与模块注释“依赖插槽层动态切换后端”冲突，但属于架构逻辑，暂按要求三类外略？哦等三类是逻辑、异常、安全，这个架构冲突不算，先跳过。再看，哦shot里的duration会不会是负数？或非数值？也是边界条件。
+  [中] modules/video_composer.py:81 | shots参数未做前置校验：每个shot缺少必填键（type/path/duration）、type非image/video、duration非正数会导致后续运行时异常 | 建议增加前置for循环校验，抛出带具体信息的ValueError
+  [中] modules/video_composer.py:128 | 仅显式关闭final剪辑，所有中间创建的ImageClip/VideoFileClip/AudioFileClip子对象未释放资源，存在文件句柄/临时文件泄漏风险 | 建议将所有clips、voice、bgm加入一个列表，用try-finally块在结束前统一close
+  [中] modules/video_composer.py:105、111 | os.path.exists未校验文件可读性，若文件存在但无权限读取会直接抛出PermissionError等异常 | 建议在exists后增加os.access检查，或用try-except包裹AudioFileClip/VideoFileClip/ImageClip初始化逻辑
+  [低] modules/video_composer.py:85-88 | 图片缩放逻辑冗余且可能先拉伸后再强制拉伸：前两次resized后直接用Resize固定宽高无意义 | 建议删除前两次resized，Resize时可添加keep_ratio=True+fill_color参数适配（避免黑边/拉伸可选）
+[modules/copy_engine.py] 190行 ... 4个问题
+  [高] modules/copy_engine.py:172,218 | 直接调用_provider的私有方法_call_deepseek，依赖不稳定的内部实现，一旦provider层重构会导致功能失效 | 建议provider暴露公开的通用调用接口（如call_llm(messages, **kwargs)）替代直接访问私有方法
+  [中] modules/copy_engine.py:39 | 未验证self._provider.generate()的返回值结构，若缺失title/body/tags会导致KeyError | 建议在返回前增加结构校验，缺失时提供默认值或抛出明确的业务异常
+  [中] modules/copy_engine.py:39,89,172,218 | 调用provider相关方法（尤其是涉及网络API的调用）未设置超时、未捕获处理异常（如网络超时、API连接失败、权限不足），可能导致程序崩溃或无响应 | 建议在调用处添加try-except块，捕获requests.exceptions.RequestException等相关异常，设置合理超时，并提供友好的错误信息或降级方案
+  [低] modules/copy_engine.py:26 | 未检查get_provider()的返回值，若返回None会导致后续方法调用空指针异常 | 建议在__init__中检查self._provider是否为None，为空时抛出明确的初始化异常
+[modules/vision_analyzer.py] 289行 ... 4个问题
+  [低] modules/vision_analyzer.py:85 | 边界条件遗漏：analyze_video未校验max_frames参数，若传入<=0的值会跳过关键帧采样返回空帧提示 | 建议在函数开头添加max_frames = max(1, max_frames)的修正逻辑
+  [低] modules/vision_analyzer.py:98,174 | 边界条件遗漏：仅检查os.path.exists()未验证是否为普通文件，传入目录会触发IsADirectoryError（虽外层有捕获但不严谨） | 建议替换为os.path.isfile()或Path.is_file()
+  [中] modules/vision_analyzer.py:130,139,228 | 逻辑漏洞：直接硬索引API响应resp.json()["choices"][0]["message"]["content"]，依赖API固定返回结构，若变更/异常会触发KeyError/IndexError | 建议使用字典/列表的安全访问方式（如.get()、长度判断）
+  [中] modules/vision_analyzer.py:156-187 | 异常处理缺失/资源未释放：cv2.VideoCapture未用try-finally包裹到cap.release()，若采样过程抛异常会导致视频句柄泄漏 | 建议将cap初始化后的操作放在try块，finally块强制调用cap.release()
+[modules/local_image.py] 79行 ... 5个问题
+  [中] modules/local_image.py:21-26 | 全局单例_provider的初始化无线程锁，多线程环境下存在竞态条件，可能导致重复创建provider实例 | 建议导入threading.Lock，添加全局锁保护初始化逻辑
+  [中] modules/local_image.py:36 | stitch_images的image_paths参数未校验非空，若传入空列表会导致下游处理异常 | 建议在调用provider前检查len(image_paths)>=1，否则抛出ValueError
+  [低] modules/local_image.py:29 | generate_card的width/height参数未校验（若提供）为非正数值，可能导致下游绘图异常 | 建议在调用provider前检查若width/height非None，需满足>0
+  [低] modules/local_image.py:36 | stitch_images的image_paths元素未校验为可转换为有效路径的类型，存在类型误用风险 | 建议在调用provider前用Path()尝试转换元素或检查类型
+  [低] modules/local_image.py:50-57,60-67 | 测试代码中generate_card、generate_cover调用未捕获异常，若provider出错会导致整个测试程序崩溃 | 建议添加try-except包裹测试调用并打印友好错误
+[modules/素材分析.py] 302行 ... 6个问题
+  [中] modules/素材分析.py:110 | 逻辑漏洞-类型误用：已将图片转为灰度图（像素为int类型），仍尝试检查像素元素长度，会触发TypeError（当前被异常捕获隐藏） | 移除该无效检查，因convert("L")后像素必为单值整数
+  [中] modules/素材分析.py:78 | 逻辑漏洞-边界条件遗漏：未处理调色板模式（P模式）图片，此时getdata()返回调色板索引而非RGB值，导致主色调计算错误 | 在处理前将图片统一转为RGB模式，如small = img.convert("RGB").copy()
+  [低] modules/素材分析.py:47 | 异常处理缺失-资源未释放：Image.open()未使用上下文管理器或显式关闭，可能导致文件句柄未及时释放 | 使用with Image.open(image_path) as img:替代当前赋值方式
+  [低] modules/素材分析.py:73,96 | 异常处理缺失-错误静默吞掉：_get_dominant_color和_detect_text_region捕获所有异常后直接返回默认值，未记录问题，难以排查故障 | 至少添加日志记录异常详情，或根据需求上抛特定异常
+  [低] modules/素材分析.py:38 | 逻辑漏洞-边界条件遗漏：仅检查文件是否存在，未校验是否为普通文件，若传入目录会触发无效操作（虽被捕获） | 将os.path.exists(image_path)替换为os.path.isfile(image_path)
+  [低] modules/素材分析.py:173 | 异常处理缺失-类型检查缺失：未校验paths参数类型，若传入非字符串且非可迭代对象（如int）会触发TypeError | 增加参数类型校验，确保paths为str或可迭代的路径集合
+[modules/search.py] 187行 ... 2个问题
+  [中] modules/search.py:60 | categories参数未做类型校验，若传入字符串会被拆分为单字符作为分类，传入不可迭代类型会抛出TypeError | 建议在拼接前校验categories为非字符串的可迭代序列，例如`if categories: if isinstance(categories, str): categories = [categories]; params["categories"] = ",".join(categories)`
+  [高] modules/search.py:72 | resp.json()可能抛出JSONDecodeError/ValueError（响应非合法JSON时），但当前仅捕获requests.exceptions.RequestException，会导致搜索流程直接崩溃 | 建议在except块中增加对ValueError/json.JSONDecodeError的捕获，返回标准化错误结果
+[modules/jimeng_client.py] 284行 ... 3个问题
+  [中] modules/jimeng_client.py:88 | urllib fallback 分支未完整捕获异常（如 URLError、JSONDecodeError），可能导致程序崩溃 | 建议将 urllib 分支代码包裹在 try-except 中，统一处理异常并返回错误字典
+  [低] modules/jimeng_client.py:114 | 轮询任务结果时未处理查询请求本身失败的情况（如 result 含 error 字段），会导致无意义轮询 | 建议在每次获取 result 后检查是否存在 error 字段，若存在则提前返回错误
+  [低] modules/jimeng_client.py:167 | 未验证 size 参数的类型与长度，若传入非二元组或长度不足会触发 IndexError/TypeError | 建议添加 size 参数校验，确保为长度 2 的整数序列
+[providers/video/clip.py] 1611行 ... 11个问题
+  [逻辑漏洞] providers/video/clip.py:185 | 跳帧处理（每隔1帧处理1帧）导致静止检测、姿态评分等依赖帧间对比的功能出现错误，且后续平滑/插值无法完全修复时序偏差 | 建议去除跳帧逻辑，或使用时序一致的采样（如保留全部帧、或对跳帧前的数据进行缓存复用）
+  [逻辑漏洞] providers/video/clip.py:480,493 | _check_hand_gesture_bonus 函数中条件1双手腕同时满足会重复加分；条件3手腕检查计数逻辑冗余且与_cfg配置不一致 | 建议条件1只加一次分；删除冗余的 wrist_checks，直接复用 _calc_gesture_bonus 的逻辑
+  [逻辑漏洞] providers/video/clip.py:1371-1384 | _concat_videos 将所有视频帧读入内存，大视频/长视频会导致 OOM（内存溢出） | 建议流式拼接，边读边写，不要缓存所有帧
+  [逻辑漏洞] providers/video/clip.py:1025-1029 | _find_scenes/refined_scenes 合并场景时将短场景直接追加到前一场景的结束，可能会合并无骨架的间隙帧，导致选段跨越无内容区域 | 建议合并时仅保留有内容的连续帧，或避免跨间隙合并
+  [逻辑漏洞] providers/video/clip.py:584-589 | _evaluate_all_frames 先正向填补评分后，未反向填补开头的 None 评分，可能导致开头几帧错误使用默认的 "incomplete" | 建议在正向填补后增加反向填补逻辑，从第一个有效评分往前填充
+  [异常处理缺失] providers/video/clip.py:1078-1110 | _output_segment 和 _concat_videos 使用 OpenCV VideoWriter 未检查音轨丢失问题，且未处理编码失败、权限不足等异常的详细信息 | 建议添加 try-except 捕获 IOError/OpenCV 异常，输出详细错误；如需要保留音轨，可改用 moviepy 或 ffmpeg
+  [异常处理/资源泄漏] providers/video/clip.py:1032-1047 | _concat_videos 中如果中间视频处理出错，已打开的 VideoCapture 可能未释放 | 建议使用 try-finally 或上下文管理器确保所有 cap 都被释放
+  [健壮性] providers/video/clip.py:1116-1121 | _output_segment 验证输出时仅用 cv2.VideoCapture 读取帧计数，可能在部分损坏文件上通过检查但实际不可用；且未检查帧率/尺寸是否匹配 | 建议增加实际解码采样验证；比对输入输出的基础参数
+  [冗余/可维护性] providers/video/clip.py:245-377 | _find_scenes 和 _detect_scene_cuts 两个场景检测函数功能重复，且前者未被调用，代码冗余易混淆 | 建议删除未使用的 _detect_scene_cuts 函数，统一使用一个场景检测逻辑
+  [逻辑漏洞] providers/video/clip.py:651-663 | _check_folded 中未检查 prev_keypoints 的长度是否匹配当前帧 keypoints，可能导致索引越界 | 建议在访问 prev_keypoints[idx] 前检查 len(prev_keypoints) > idx
+  [安全/健壮性] providers/video/clip.py:145-152 | _copy_model_to_ascii_path 使用固定的临时文件名 pose_landmarker_lite.task，多进程/多实例同时运行可能出现竞态条件 | 建议在临时文件名中加入随机字符串或进程 ID，或使用 tempfile.NamedTemporaryFile
+[providers/video/moviepy.py] 232行 ... 14个问题
+  [中] providers/video/moviepy.py:14 | subprocess.run安装依赖未设置超时，网络异常时可能导致模块导入永久阻塞；且未捕获CalledProcessError/TimeoutExpired，安装失败会直接中断模块导入 | 建议给subprocess.run添加timeout参数（如300秒），并包裹try-except捕获相关异常，失败时仅设置MOVIEPY_AVAILABLE=False
+  [低] providers/video/moviepy.py:51-57 | 对同一张图创建两次ImageClip实例，第一次创建的clip在h不足时未关闭，存在资源泄漏 | 建议复用第一次创建的clip，避免重复实例化，或及时关闭未使用的clip
+  [低] providers/video/moviepy.py:49 | 未检查transition_duration是否≥duration_per_image，可能导致转场覆盖内容或拼接异常 | 建议添加校验，若transition_duration≥duration_per_image则抛出ValueError或自动调整为安全值
+  [低] providers/video/moviepy.py:75-82 | 若write_videofile执行失败，final及clips列表中的ImageClip未被关闭，存在资源泄漏 | 建议使用try-finally块，在finally中依次关闭所有创建的Clip实例
+  [中] providers/video/moviepy.py:98-99 | 未验证cuts参数的有效性（如长度为2、start<end、不超视频时长），可能导致subclipped异常 | 建议添加预校验，不符合要求时抛出明确ValueError
+  [低] providers/video/moviepy.py:102-117 | 若write_videofile执行失败，final及clips列表中的VideoFileClip未被关闭，存在资源泄漏 | 建议使用try-finally块，在finally中依次关闭所有创建的Clip实例
+  [中] providers/video/moviepy.py:126-129 | 未检查video_path是否存在，直接传入VideoFileClip会触发FileNotFoundError | 建议添加os.path.exists(video_path)检查，不存在时抛出明确异常
+  [低] providers/video/moviepy.py:150-161 | 若write_videofile执行失败，video及audio_tracks中的Clip未被关闭，存在资源泄漏 | 建议使用try-finally块，在finally中依次关闭所有创建的Clip实例
+  [高] providers/video/moviepy.py:201-205 | 使用asyncio.run嵌套事件循环，在已存在事件循环的环境（如Jupyter、异步Web服务）中调用会触发RuntimeError | 建议检查当前是否有运行中的事件循环，选择get_event_loop().run_until_complete()等合适方式执行协程
+  [中] providers/video/moviepy.py:202 | 在协程内部导入edge_tts，未预检查依赖可用性，运行时缺失会触发ImportError | 建议在模块顶部添加edge_tts的可选导入（类似MoviePy），或调用前检查并抛出明确异常
+  [中] providers/video/moviepy.py:214-223 | 临时资源清理仅在前置步骤全成功时执行，中间失败会遗留垃圾；且清理异常被完全静默吞掉 | 建议将清理移至try-finally的finally块，清理失败至少输出警告日志
+  [中] providers/video/moviepy.py:174-227 | 未检查MOVIEPY_AVAILABLE标志位，直接使用MoviePy API会触发ImportError | 建议在各方法开头添加检查，不可用时抛出明确RuntimeError
+  [中] providers/video/moviepy.py:207 | 未检查生成的配音文件local_voiceover是否存在且非空，直接调用getsize会触发FileNotFoundError | 建议添加文件存在性和大小检查，不符合则抛出明确异常
+  [高] providers/video/moviepy.py:* | 未对输入路径（如output_path、image_paths、video_paths等）做路径穿越防护，可能导致读取/写入任意位置文件 | 建议对所有外部输入路径做规范化（os.path.normpath）、绝对路径转换，并限制在允许的目录范围内
+[providers/copy/deepseek.py] 230行 ... 3个问题
+  [中] providers/copy/deepseek.py:207-217 | _parse_copy中单#开头的标题会被误判为标签，导致标题提取错误；且一行含多个#标签时未拆分，会被合并为单个标签 | 建议优先提取第一个以#/##开头的行作为标题（后续#开头行才视为标签），并对标签行按#分割逐个提取非空标签
+  [低] providers/copy/deepseek.py:62-66 | _call_deepseek捕获所有异常后直接返回模拟响应，未向上层传递失败状态，调用方无法区分真实/模拟数据 | 建议增加返回状态标识，或在必要时抛出异常供上层处理（若需保持原有行为可保留但补充更明确的可观测告警）
+  [中] providers/copy/deepseek.py:39 | base_url从配置获取后未做格式校验直接拼接请求，存在SSRF或API密钥泄露风险（若配置被篡改） | 建议对base_url做格式验证（如限制为http/https协议、配置允许的域名白名单）
+[providers/image/pillow.py] 321行 ... 3个问题
+  [高] providers/image/pillow.py:generate_card/115、generate_cover/179、stitch_images/256 | output_path参数未做路径校验，存在路径穿越风险，可能覆盖/写入任意文件 | 建议1：使用resolve_path规范化output_path后，检查是否在允许的output_dir目录内；建议2：若需支持自定义路径，仅允许在output_dir下的子目录
+  [中] providers/image/pillow.py:69-74 | _hex_to_rgb未处理无效十六进制颜色（如含非0-9A-Fa-f字符）导致的ValueError | 增加try-except捕获ValueError，异常时返回默认白色(255,255,255)
+  [中] providers/image/pillow.py:generate_card/115、generate_cover/179、stitch_images/256 | 当output_path为用户自定义值时，未创建其父目录，可能因目录不存在抛出FileNotFoundError | 在保存前调用os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+[providers/image/html_screenshot.py] 480行 ... 8个问题
+  [中] providers/image/html_screenshot.py:56 | Playwright浏览器没有显式等待渲染完成（如networkidle/wait_for_load_state），可能导致截图内容不全 | 建议在page.set_content后添加page.wait_for_load_state("networkidle")或指定timeout
+  [中] providers/image/html_screenshot.py:56 | _screenshot函数中browser.close()放在with块外，若截图异常会导致资源未释放 | 建议将browser.close()放在try-finally块中，或直接使用context manager管理browser
+  [低] providers/image/html_screenshot.py:246 | _stitch_grid函数中的_img_to_b64静默吞掉异常，没有日志输出 | 建议添加异常日志打印
+  [中] providers/image/html_screenshot.py:335 | 拼接图场景没有设置full_page=True，且body高度未自适应，可能导致长图被截断 | 建议在_screenshot调用时设置full_page=True，并移除body固定高度
+  [低] providers/image/html_screenshot.py:197 | generate_card的bg_color/text_color参数未使用，存在接口不一致问题 | 建议实现参数功能或移除未使用参数
+  [中] providers/image/html_screenshot.py:133 | _auto_break函数按字符数强制截断，可能会截断英文单词或emoji组合，导致显示不完整 | 建议优化换行逻辑，支持按语义/英文单词边界换行
+  [低] providers/image/html_screenshot.py:202 | subtitle分割逻辑中使用了重复的·字符，且没有处理连续分隔符的情况 | 建议优化正则为r"[·•、\n]+"，去除重复分隔符
+  [低] providers/image/html_screenshot.py:56 | _screenshot函数没有设置timeout，极端情况下可能导致长时间阻塞 | 建议在launch/page操作时添加timeout参数
+[utils/reference_reader.py] 286行 ... 6个问题
+  [中等] utils/reference_reader.py:48 | 文件读取操作未捕获PermissionError、UnicodeDecodeError、IsADirectoryError等异常，可能导致程序崩溃 | 建议添加try-except块处理文件读取异常，返回友好提示或默认内容
+  [中等] utils/reference_reader.py:62 | 文件读取操作未捕获相关异常，可能导致程序崩溃 | 建议添加try-except块处理文件读取异常
+  [中等] utils/reference_reader.py:78 | 调用os.makedirs时未处理ref_dir为已存在文件的情况，会抛出FileExistsError | 建议在创建目录前检查ref_dir是否为文件，或添加try-except捕获FileExistsError并处理
+  [中等] utils/reference_reader.py:86 | 文件追加操作未捕获PermissionError、IsADirectoryError等异常，可能导致程序崩溃 | 建议添加try-except块处理文件写入异常
+  [中等] utils/reference_reader.py:108 | 文件读取操作未捕获相关异常，可能导致程序崩溃 | 建议添加try-except块处理文件读取异常
+  [低] utils/reference_reader.py:32 | 默认参考库路径为Windows专用路径，跨平台兼容性不足 | 建议根据操作系统使用合适的默认路径，如Linux/macOS使用~/.config/hermes/...
+[utils/config_loader.py] 105行 ... 5个问题
+  [中] utils/config_loader.py:66 | 直接用硬索引访问cfg['project']['work_dir']，若配置缺失会触发KeyError，且测试代码不应依赖生产配置项的完整存在 | 改用get('project.work_dir')等安全访问方式
+  [高] utils/config_loader.py:67 | 对get返回值直接切片，若配置项不存在get返回None会触发TypeError | 先检查值是否为None再切片，例如: key = get('api_keys.deepseek.api_key'); print(f"DeepSeek Key: {key[:10]}..." if key else "未设置")
+  [中] utils/config_loader.py:7 | 引入yaml模块但未限制safe_load可解析的类型，虽已用safe_load比full_load好，但在较旧版本PyYAML中若配置恶意内容可能有风险（属于健壮性+潜在低风险安全扩展），且当前未对safe_load返回None（空yaml文件）的情况处理 | 1. 添加PyYAML版本检查或保持safe_load；2. 检查safe_load返回值是否为dict，否则抛出ValueError
+  [中] utils/config_loader.py:53-56 | ensure_dirs直接调用resolve_path，而resolve_path依赖get_config可能抛出FileNotFoundError，且未处理os.makedirs的OSError子类（如PermissionError） | 1. 给ensure_dirs加try-except捕获常见OSError；2. 明确标注ensure_dirs可能抛出的异常
+  [低] utils/config_loader.py:38-50 | get函数中对于路径中间值不是dict的情况直接返回default，但如果配置路径中间是list或其他类型未明确提示，可能掩盖配置结构错误 | 可添加可选的raise_on_malformed参数或日志提示
+
+共审查 15 个文件，发现 102 个问题
+
+完整报告: E:\任务\小红书内容工坊\_review_report.json
+DONE

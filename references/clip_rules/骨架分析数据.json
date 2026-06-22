@@ -1,0 +1,63 @@
+{
+  "config": {
+    "video_count": 5,
+    "total_pose_frames": 2641,
+    "total_clustered_frames": 2641,
+    "best_k": 3,
+    "silhouette_score": 0.929399090499126,
+    "feature_dimensions": 26,
+    "num_keypoints": 13,
+    "keypoints_used": [
+      0,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ]
+  },
+  "cluster_summary": [
+    {
+      "cluster_id": 0,
+      "rank": 1,
+      "frame_count": 2628,
+      "percentage": 99.5,
+      "videos": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "description": "手臂微屈，手下垂，双腿直立"
+    },
+    {
+      "cluster_id": 1,
+      "rank": 2,
+      "frame_count": 12,
+      "percentage": 0.5,
+      "videos": [
+        0,
+        1
+      ],
+      "description": "异常姿态（可能是检测噪声或过渡帧）"
+    },
+    {
+      "cluster_id": 2,
+      "rank": 3,
+      "frame_count": 1,
+      "percentage": 0.0,
+      "videos": [
+        0
+      ],
+      "description": "异常姿态（可能是检测噪声或过渡帧）"
+    }
+  ]
+}

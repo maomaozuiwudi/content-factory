@@ -1,0 +1,47 @@
+providers:
+  copy: deepseek
+  image: html_screenshot
+  video: moviepy
+
+api_keys:
+  deepseek:
+    api_key: sk-eafa3873df78451c876422cb4a061a00
+    base_url: https://api.deepseek.com
+    model: deepseek-chat
+    temperature: 0.7
+  jimeng:
+    ak: ''
+    enabled: false
+    sk: ''
+  searxng:
+    base_url: http://172.27.202.242:8080
+image_defaults:
+  accent_color: '#E94560'
+  bg_color: '#1A1A2E'
+  font_path: ''
+  font_size_subtitle: 36
+  font_size_title: 64
+  height: 1440
+  text_color: '#FFFFFF'
+  width: 1080
+jianying_defaults:
+  draft_name: 小红书内容工坊草稿
+  duration_per_image: 3.0
+  fps: 30
+  transition_duration: 0.5
+  transition_type: fade
+output:
+  draft_dir: output/drafts/
+  image_dir: output/images/
+  log_dir: logs/
+project:
+  work_dir: E:/任务/小红书内容工坊/
+剪辑:
+  工具: moviepy
+  配音: edge-tts
+  默认BGM: ''
+参考库:
+  path: E:/任务/小红书内容工坊/references/
+素材来源:
+  视频: user_give
+  配图: local

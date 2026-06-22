@@ -1,0 +1,16 @@
+# ============================================================
+# 用户偏好记录
+# 每次完成一个成品后自动追加，用于学习用户创作习惯
+# ============================================================
+- timestamp: 2026-06-22 02:03
+  mode: material_driven
+  title: 连衣裙穿搭展示
+  tags:
+  - 穿搭
+  - 连衣裙
+  total_duration: 34.8
+  shots: 6
+  bgm: bgm_20260622_020301.mp3
+  bgm_source: user_provided
+  voiceover_script_len: 6
+  has_voiceover: true
